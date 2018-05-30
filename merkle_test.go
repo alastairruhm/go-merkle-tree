@@ -1,12 +1,10 @@
-package merkle_test
+package merkle
 
 import (
 	"crypto/sha1"
 	"fmt"
 	"io"
 	"testing"
-
-	"github.com/alastairruhm/merkle"
 )
 
 func TestMerkleTree(t *testing.T) {
@@ -18,25 +16,25 @@ func TestMerkleTree(t *testing.T) {
 	)
 
 	// Create leaf nodes
-	leafNode1, err := merkle.NewLeafNode([]byte(dataBlock1))
+	leafNode1, err := NewLeafNode([]byte(dataBlock1))
 	if err != nil {
 		t.Error(err)
 	}
-	leafNode2, err := merkle.NewLeafNode([]byte(dataBlock2))
+	leafNode2, err := NewLeafNode([]byte(dataBlock2))
 	if err != nil {
 		t.Error(err)
 	}
-	leafNode3, err := merkle.NewLeafNode([]byte(dataBlock3))
+	leafNode3, err := NewLeafNode([]byte(dataBlock3))
 	if err != nil {
 		t.Error(err)
 	}
-	leafNode4, err := merkle.NewLeafNode([]byte(dataBlock4))
+	leafNode4, err := NewLeafNode([]byte(dataBlock4))
 	if err != nil {
 		t.Error(err)
 	}
 
 	// Build the merkle tree
-	rootNode := merkle.BuildTree(leafNode1, leafNode2, leafNode3, leafNode4)
+	rootNode := BuildTree(leafNode1, leafNode2, leafNode3, leafNode4)
 
 	// Assert parent checksums
 	c1, err := leafNode1.Parent.Checksum()
@@ -119,21 +117,21 @@ func TestOddNumberOfLeaves(t *testing.T) {
 	)
 
 	// Create leaf nodes
-	leafNode1, err := merkle.NewLeafNode([]byte(dataBlock1))
+	leafNode1, err := NewLeafNode([]byte(dataBlock1))
 	if err != nil {
 		t.Error(err)
 	}
-	leafNode2, err := merkle.NewLeafNode([]byte(dataBlock2))
+	leafNode2, err := NewLeafNode([]byte(dataBlock2))
 	if err != nil {
 		t.Error(err)
 	}
-	leafNode3, err := merkle.NewLeafNode([]byte(dataBlock3))
+	leafNode3, err := NewLeafNode([]byte(dataBlock3))
 	if err != nil {
 		t.Error(err)
 	}
 
 	// Build the merkle tree
-	rootNode0 := merkle.BuildTree(leafNode1, leafNode2)
+	rootNode0 := BuildTree(leafNode1, leafNode2)
 
 	c0, err := rootNode0.Checksum()
 	if err != nil {
@@ -141,7 +139,7 @@ func TestOddNumberOfLeaves(t *testing.T) {
 	}
 	rootChecksum0 := fmt.Sprintf("%x", c0)
 
-	rootNode1 := merkle.BuildTree(leafNode1, leafNode2, leafNode3)
+	rootNode1 := BuildTree(leafNode1, leafNode2, leafNode3)
 	c1, err := rootNode1.Checksum()
 	if err != nil {
 		t.Error(err)

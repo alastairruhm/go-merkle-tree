@@ -6,7 +6,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/RichardKnop/merkle"
+	"github.com/alastairruhm/merkle"
 )
 
 func TestMerkleTree(t *testing.T) {
@@ -109,4 +109,48 @@ func TestMerkleTree(t *testing.T) {
 	if rootChecksum != expectedRootChecksum {
 		t.Errorf("expected checksum %q, got %q", expectedRootChecksum, rootChecksum)
 	}
+}
+
+func TestOddNumberOfLeaves(t *testing.T) {
+	var (
+		dataBlock1 = "data block 1"
+		dataBlock2 = "data block 2"
+		dataBlock3 = "data block 3"
+	)
+
+	// Create leaf nodes
+	leafNode1, err := merkle.NewLeafNode([]byte(dataBlock1))
+	if err != nil {
+		t.Error(err)
+	}
+	leafNode2, err := merkle.NewLeafNode([]byte(dataBlock2))
+	if err != nil {
+		t.Error(err)
+	}
+	leafNode3, err := merkle.NewLeafNode([]byte(dataBlock3))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Build the merkle tree
+	rootNode0 := merkle.BuildTree(leafNode1, leafNode2)
+
+	c0, err := rootNode0.Checksum()
+	if err != nil {
+		t.Error(err)
+	}
+	rootChecksum0 := fmt.Sprintf("%x", c0)
+
+	rootNode1 := merkle.BuildTree(leafNode1, leafNode2, leafNode3)
+	c1, err := rootNode1.Checksum()
+	if err != nil {
+		t.Error(err)
+	}
+
+	rootChecksum1 := fmt.Sprintf("%x", c1)
+
+	if rootChecksum0 == rootChecksum1 {
+		t.Errorf("checksum should not be equal %q, got %q", rootChecksum0, rootChecksum1)
+	}
+
 }

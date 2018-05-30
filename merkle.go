@@ -66,6 +66,11 @@ func (n Node) Checksum() ([]byte, error) {
 // BuildTree builds a tree from leaf nodes and returns a root node
 func BuildTree(theNodes ...*Node) *Node {
 	var nodes []*Node
+	// fix odd number of leaves by duplicate the last element
+	if len(theNodes)%2 == 1 {
+		theLast := theNodes[len(theNodes)-1]
+		theNodes = append(theNodes, theLast)
+	}
 	for i := 0; i < len(theNodes)-1; i = i + 2 {
 		parentNode := new(Node)
 		parentNode.Left = theNodes[i]
